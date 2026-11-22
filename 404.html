@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Nirmala Nagara</title>
+  <script>
+    var l = window.location;
+    var seg = l.pathname.replace('/nirmala-nagara', '').replace(/^\//, '');
+    l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      '/nirmala-nagara/' + '?p=/' + seg +
+      (l.search ? '&q=' + l.search.slice(1) : '') + l.hash);
+  </script>
+</head>
+<body></body>
+</html>
