@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#efebe9"/>
+  <!-- Road -->
+  <rect x="0" y="210" width="400" height="90" fill="#9e9e9e"/>
+  <rect x="0" y="205" width="400" height="10" fill="#757575"/>
+  <!-- Large debris mound -->
+  <polygon points="80,210 320,210 290,140 110,140" fill="#78909c" opacity="0.9"/>
+  <polygon points="100,210 300,210 275,155 125,155" fill="#607d8b" opacity="0.85"/>
+  <!-- Rubble pieces -->
+  <rect x="90" y="190" width="40" height="20" rx="2" fill="#90a4ae"/>
+  <rect x="140" y="185" width="35" height="25" rx="3" fill="#b0bec5"/>
+  <rect x="200" y="188" width="45" height="22" rx="2" fill="#78909c"/>
+  <rect x="255" y="192" width="38" height="18" rx="2" fill="#90a4ae"/>
+  <!-- Bricks -->
+  <rect x="115" y="170" width="25" height="15" rx="1" fill="#ef9a9a"/>
+  <rect x="145" y="165" width="30" height="18" rx="1" fill="#e57373"/>
+  <rect x="220" y="168" width="28" height="16" rx="1" fill="#ef9a9a"/>
+  <!-- Dust cloud -->
+  <ellipse cx="200" cy="140" rx="80" ry="20" fill="#cfd8dc" opacity="0.5"/>
+  <!-- Label -->
+  <rect x="10" y="10" width="230" height="36" rx="6" fill="#fff" opacity="0.85"/>
+  <text x="20" y="32" font-family="system-ui,sans-serif" font-size="14" fill="#c62828" font-weight="600">🏗 Sample: Construction Debris</text>
+</svg>
