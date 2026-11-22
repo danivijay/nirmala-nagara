@@ -114,7 +114,7 @@ export default function ReportPage() {
             </div>
           </div>
           <a
-            href="/dashboard"
+            href="/nirmala-nagara/dashboard"
             className="text-sm text-emerald-700 font-medium hover:text-emerald-900 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200"
           >
             Authority Dashboard →
@@ -428,7 +428,7 @@ function SuccessCard({ onAnother }: { onAnother: () => void }) {
           Report Another
         </button>
         <a
-          href="/dashboard"
+          href="/nirmala-nagara/dashboard"
           className="py-3 px-6 border border-emerald-200 text-emerald-700 font-semibold rounded-xl hover:bg-emerald-50 transition-all"
         >
           View Dashboard →

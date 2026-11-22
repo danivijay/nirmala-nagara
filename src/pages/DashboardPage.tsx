@@ -46,7 +46,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <a
-            href="/report"
+            href="/nirmala-nagara/report"
             className="text-sm text-emerald-700 font-medium hover:text-emerald-900 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 flex items-center gap-1.5"
           >
             <ArrowLeft className="w-4 h-4" /> File a Report
@@ -70,7 +70,7 @@ export default function DashboardPage() {
             </div>
             <p className="text-gray-500 font-medium">No reports yet</p>
             <p className="text-sm text-gray-400 mt-1">Reports submitted by citizens will appear here.</p>
-            <a href="/report" className="mt-4 inline-block text-sm text-emerald-600 font-medium hover:underline">
+            <a href="/nirmala-nagara/report" className="mt-4 inline-block text-sm text-emerald-600 font-medium hover:underline">
               Submit the first report →
             </a>
           </div>

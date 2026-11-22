@@ -4,7 +4,7 @@ import DashboardPage from './pages/DashboardPage';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/nirmala-nagara">
       <Routes>
         <Route path="/" element={<Navigate to="/report" replace />} />
         <Route path="/report" element={<ReportPage />} />
