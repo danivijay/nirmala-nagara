@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Upload, Camera, MapPin, AlertCircle, CheckCircle, Loader2, Trash2, ChevronDown } from 'lucide-react';
 import type { Analysis, GarbageSize, WasteCategory } from '../types';
-import { SAMPLE_SCENARIOS, BENGALURU_LOCALITIES, analyzeUserImage, saveIncident } from '../data';
+import { Link } from 'react-router-dom';
+import { SAMPLE_SCENARIOS, BENGALURU_LOCALITIES, analyzeUserImage, saveIncident, reclassify, compressImage } from '../data';
 
 type Step = 'upload' | 'analyze' | 'result' | 'success';
 
@@ -30,14 +31,17 @@ export default function ReportPage() {
   const [userSize, setUserSize] = useState<GarbageSize>('Medium');
   const [userCategory, setUserCategory] = useState<WasteCategory>('Mixed Waste');
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      setImageDataUrl(ev.target?.result as string);
+    reader.onload = async (ev) => {
+      const compressed = await compressImage(ev.target?.result as string);
+      setImageDataUrl(compressed);
+      setError(null);
       setImageSource('upload');
       setStep('analyze');
       setAnalysis(null);
@@ -83,8 +87,12 @@ export default function ReportPage() {
       status: 'Pending' as const,
       createdAt: new Date().toISOString(),
     };
-    saveIncident(incident);
+    const saved = saveIncident(incident);
     setSubmitting(false);
+    if (!saved) {
+      setError('Could not save the report: browser storage is full. Resolve or clear old reports and try again.');
+      return;
+    }
     setStep('success');
   }
 
@@ -96,6 +104,7 @@ export default function ReportPage() {
     setAnalysis(null);
     setUserSize('Medium');
     setUserCategory('Mixed Waste');
+    setError(null);
     if (fileRef.current) fileRef.current.value = '';
   }
 
@@ -113,12 +122,12 @@ export default function ReportPage() {
               <p className="text-xs text-emerald-600 font-medium mt-0.5">Clean Bengaluru. Smarter Action.</p>
             </div>
           </div>
-          <a
-            href="/nirmala-nagara/dashboard"
+          <Link
+            to="/dashboard"
             className="text-sm text-emerald-700 font-medium hover:text-emerald-900 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200"
           >
             Authority Dashboard →
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -183,7 +192,7 @@ export default function ReportPage() {
                   </label>
                 ) : (
                   <div className="relative">
-                    <img src={imageDataUrl} alt="Uploaded" className="w-full rounded-xl object-cover max-h-64" />
+                    <img src={imageDataUrl} alt="Uploaded" className="w-full h-64 rounded-xl object-contain bg-gray-100" />
                     <button
                       onClick={resetForm}
                       className="absolute top-2 right-2 bg-white rounded-lg p-1.5 shadow text-gray-500 hover:text-red-500"
@@ -268,11 +277,12 @@ export default function ReportPage() {
                 imageDataUrl={imageDataUrl!}
                 location={location}
                 onLocationChange={setLocation}
-                onSizeChange={(s) => setAnalysis({ ...analysis, size: s, severity: s === 'Small' ? 'Low' : s === 'Medium' ? 'Medium' : 'High', vehicle: s === 'Small' ? 'Handcart' : s === 'Medium' ? 'Mini pickup' : 'Tipper truck' })}
-                onCategoryChange={(c) => setAnalysis({ ...analysis, wasteCategory: c })}
+                onSizeChange={(s) => setAnalysis(reclassify(analysis, s, analysis.wasteCategory))}
+                onCategoryChange={(c) => setAnalysis(reclassify(analysis, analysis.size, c))}
                 onSubmit={handleSubmit}
                 onBack={resetForm}
                 submitting={submitting}
+                error={error}
               />
             )}
           </>
@@ -283,7 +293,7 @@ export default function ReportPage() {
 }
 
 function AnalysisResult({
-  analysis, imageDataUrl, location, onLocationChange, onSizeChange, onCategoryChange, onSubmit, onBack, submitting
+  analysis, imageDataUrl, location, onLocationChange, onSizeChange, onCategoryChange, onSubmit, onBack, submitting, error
 }: {
   analysis: Analysis;
   imageDataUrl: string;
@@ -294,15 +304,13 @@ function AnalysisResult({
   onSubmit: () => void;
   onBack: () => void;
   submitting: boolean;
+  error: string | null;
 }) {
-  const SIZES: GarbageSize[] = ['Small', 'Medium', 'Large'];
-  const CATEGORIES: WasteCategory[] = ['Mixed Waste', 'Organic Waste', 'Construction Debris', 'Plastic/Dry Waste', 'Bulky Waste'];
-
   return (
     <div className="space-y-5">
       {/* Image preview */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <img src={imageDataUrl} alt="Garbage" className="w-full object-cover max-h-56" />
+        <img src={imageDataUrl} alt="Garbage" className="w-full h-56 object-contain bg-gray-100" />
       </div>
 
       {/* Analysis card */}
@@ -390,6 +398,12 @@ function AnalysisResult({
         </div>
       </div>
 
+      {error && (
+        <div role="alert" className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+          <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" /> {error}
+        </div>
+      )}
+
       <div className="flex gap-3">
         <button
           onClick={onBack}
@@ -427,12 +441,12 @@ function SuccessCard({ onAnother }: { onAnother: () => void }) {
         >
           Report Another
         </button>
-        <a
-          href="/nirmala-nagara/dashboard"
+        <Link
+          to="/dashboard"
           className="py-3 px-6 border border-emerald-200 text-emerald-700 font-semibold rounded-xl hover:bg-emerald-50 transition-all"
         >
           View Dashboard →
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, Clock, Trash2, TrendingUp, ArrowLeft } from 'lucide-react';
 import type { Incident } from '../types';
-import { getIncidents, markResolved } from '../data';
+import { Link } from 'react-router-dom';
+import { getIncidents, markResolved, STORAGE_KEY } from '../data';
 
 const SEVERITY_COLORS: Record<string, string> = {
   Low: 'bg-green-100 text-green-700 border-green-200',
@@ -16,10 +17,15 @@ const VEHICLE_ICON: Record<string, string> = {
 };
 
 export default function DashboardPage() {
-  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [incidents, setIncidents] = useState<Incident[]>(getIncidents);
 
+  // Pick up reports filed in another tab
   useEffect(() => {
-    setIncidents(getIncidents());
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY || e.key === null) setIncidents(getIncidents());
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   function handleMarkResolved(id: string) {
@@ -45,12 +51,12 @@ export default function DashboardPage() {
               <p className="text-xs text-emerald-600 font-medium mt-0.5">Authority Dashboard</p>
             </div>
           </div>
-          <a
-            href="/nirmala-nagara/report"
+          <Link
+            to="/report"
             className="text-sm text-emerald-700 font-medium hover:text-emerald-900 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 flex items-center gap-1.5"
           >
             <ArrowLeft className="w-4 h-4" /> File a Report
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -70,9 +76,9 @@ export default function DashboardPage() {
             </div>
             <p className="text-gray-500 font-medium">No reports yet</p>
             <p className="text-sm text-gray-400 mt-1">Reports submitted by citizens will appear here.</p>
-            <a href="/nirmala-nagara/report" className="mt-4 inline-block text-sm text-emerald-600 font-medium hover:underline">
+            <Link to="/report" className="mt-4 inline-block text-sm text-emerald-600 font-medium hover:underline">
               Submit the first report →
-            </a>
+            </Link>
           </div>
         ) : (
           <div>
@@ -112,7 +118,7 @@ function IncidentCard({ incident, onResolve }: { incident: Incident; onResolve: 
     <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${status === 'Resolved' ? 'border-emerald-200 opacity-80' : 'border-gray-100'}`}>
       {/* Image */}
       <div className="relative">
-        <img src={imageDataUrl} alt="Garbage" className="w-full h-36 object-cover" />
+        <img src={imageDataUrl} alt="Garbage" className="w-full h-44 object-contain bg-gray-100" />
         <span className={`absolute top-2 right-2 text-xs font-bold px-2.5 py-1 rounded-full border ${
           status === 'Resolved' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-yellow-100 text-yellow-700 border-yellow-200'
         }`}>

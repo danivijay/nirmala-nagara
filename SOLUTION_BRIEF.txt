@@ -1,0 +1,110 @@
+NIRMALA NAGARA - SOLUTION BRIEF
+Clean Bengaluru. Smarter Action.
+==================================================================
+
+
+1. THE PROBLEM
+------------------------------------------------------------------
+Roadside garbage dumps ("black spots") are one of Bengaluru's most
+visible civic problems. Citizens see them every day but have no quick,
+simple way to report them. Municipal teams, in turn, get complaints
+that are vague ("there is garbage near the bus stop"), without photos,
+and without any hint of how big the pile is or what kind of waste it
+contains.
+
+The result:
+  - The wrong vehicle is sent. A handcart arrives at a pile of
+    construction debris that needs a tipper truck, so the trip is wasted.
+  - There is no way to prioritise. A few plastic wrappers and a
+    truck-load of rubble look the same in a complaint queue.
+  - There is no closure. Citizens never see whether their report was
+    acted on, so they stop reporting.
+
+
+2. THE SOLUTION
+------------------------------------------------------------------
+Nirmala Nagara is a two-sided web app that turns a citizen's photo into
+a dispatch-ready work order for the municipality.
+
+  CITIZEN REPORTING (/report)
+    1. Upload a photo of the garbage (or pick a demo scenario).
+    2. Classify it: waste category and estimated size.
+    3. Choose the Bengaluru locality.
+    4. Review the analysis and submit.
+
+  AUTHORITY DASHBOARD (/dashboard)
+    - Live counts of Total, Pending and Resolved reports.
+    - One card per incident: photo, locality, date, severity,
+      size, waste category and the recommended vehicle.
+    - "Mark Resolved" closes the loop once the site is cleaned.
+
+
+3. HOW A REPORT BECOMES A WORK ORDER
+------------------------------------------------------------------
+Every report is turned into three operational fields:
+
+  Size      Severity   Recommended vehicle
+  ------    --------   -------------------
+  Small     Low        Handcart
+  Medium    Medium     Mini pickup
+  Large     High       Tipper truck
+
+Waste categories: Mixed Waste, Organic Waste, Construction Debris,
+Plastic/Dry Waste, Bulky Waste.
+
+Severity lets ward officers sort the queue. The vehicle recommendation
+means the right crew and equipment go out on the first trip. If the
+citizen corrects the size or category on the review screen, the
+severity, vehicle and notes update immediately.
+
+Note: vehicle recommendations are prototype suggestions, not official
+municipal guidelines.
+
+
+4. WHAT IS BUILT TODAY (MVP)
+------------------------------------------------------------------
+  - React 19 + TypeScript + Vite single-page app, styled with
+    Tailwind CSS, deployed on GitHub Pages.
+  - Works on phone and desktop browsers; no install or login.
+  - Photos are compressed in the browser before saving (a 7 MB phone
+    photo is stored as about 110 KB), so reports stay fast and light.
+  - Reports are stored in the browser (localStorage). The dashboard
+    updates live when a report is filed in another tab.
+  - Three illustrated demo scenarios plus three real Bengaluru photos
+    (Wikimedia Commons, CC BY-SA) for testing.
+  - Classification is done by the citizen today. The screen states
+    clearly that no AI vision is used yet.
+
+
+5. ROADMAP
+------------------------------------------------------------------
+  Phase 2 - Real backend
+    - Shared database and image storage so every officer sees every
+      report, on any device.
+    - GPS capture and a map view of black spots.
+
+  Phase 3 - AI-assisted triage
+    - Vision model detects garbage, suggests category and size, and
+      flags photos that are not garbage.
+    - Duplicate detection when several citizens report the same spot.
+
+  Phase 4 - Operations
+    - Ward-wise assignment and SLA timers.
+    - Before/after photo proof when marking a report resolved.
+    - Citizen notifications when their report is cleared.
+    - Hotspot analytics to plan bins, CCTV and enforcement.
+
+
+6. IMPACT
+------------------------------------------------------------------
+  - Fewer wasted trips: the first vehicle sent is the right one.
+  - Faster response on high-severity sites through clear prioritisation.
+  - Visible accountability: every report has a status.
+  - Data for planning: where, what and how much waste is being dumped.
+
+
+7. LINKS
+------------------------------------------------------------------
+  Citizen reporting:    /nirmala-nagara/report
+  Authority dashboard:  /nirmala-nagara/dashboard
+  Demo video:           demo/nirmala-nagara-demo.mp4

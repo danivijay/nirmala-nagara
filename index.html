@@ -8,11 +8,13 @@
     <title>Nirmala Nagara — Clean Bengaluru</title>
     <script>
       // Handle GitHub Pages SPA redirect
+      // 404.html sends /nirmala-nagara/dashboard to /nirmala-nagara/?p=/dashboard
       (function() {
-        var r = sessionStorage.redirect;
-        delete sessionStorage.redirect;
-        if (r && r !== location.href) {
-          history.replaceState(null, null, r);
+        var params = new URLSearchParams(location.search);
+        var p = params.get('p');
+        if (p) {
+          var q = params.get('q');
+          history.replaceState(null, '', '/nirmala-nagara' + p + (q ? '?' + q : '') + location.hash);
         }
       })();
     </script>
